@@ -7,8 +7,9 @@ venv/
 __pycache__/
 *.pyc
 
-# Downloaded photos
+# Downloaded media
 photos/
+downloads/
 
 # System files
 .DS_Store

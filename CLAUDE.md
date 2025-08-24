@@ -67,12 +67,16 @@ This project was developed by reverse-engineering the ProCare Connect web applic
 
 - ✅ **Automated Authentication**: Logs in using stored credentials
 - ✅ **Child Discovery**: Automatically finds children associated with parent account
-- ✅ **Bulk Photo Download**: Downloads all available photos in batch
+- ✅ **Photo & Video Download**: Downloads both photos and videos in batch
+- ✅ **Date Range Filtering**: Download only media from specific date ranges
+- ✅ **Date-based Organization**: Automatically organizes files into date folders (YYYY-MM-DD)
+- ✅ **Rate Limiting**: Built-in delays and breaks to avoid overwhelming the server
 - ✅ **Progress Tracking**: Shows download progress and counts
 - ✅ **Unique Filenames**: Uses UUID-based filenames to prevent conflicts
 - ✅ **Metadata Preservation**: Includes date, timestamp, and activity information
 - ✅ **Error Recovery**: Handles network errors and continues downloading
 - ✅ **Pagination Support**: Processes multiple pages of photo activities
+- ✅ **Command Line Interface**: Flexible options for different use cases
 
 ## Setup and Usage
 
@@ -88,7 +92,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Install dependencies
-pip install requests python-dotenv
+pip install requests python-dotenv python-dateutil
 
 # Set up credentials
 echo "PROCARE_URL=https://schools.procareconnect.com/login" > .env.secrets
@@ -97,9 +101,43 @@ echo "PROCARE_PASSWORD=your_password" >> .env.secrets
 ```
 
 ### Running the Downloader
+
+#### Basic Usage
 ```bash
 source venv/bin/activate
-python main.py
+python main.py  # Download all available media
+```
+
+#### Advanced Usage with Date Ranges
+```bash
+# Download all media from August 2025
+python main.py --from 2025-08-01 --to 2025-08-31
+
+# Download from August 20th onwards
+python main.py --from 2025-08-20
+
+# Download up to August 15th
+python main.py --to 2025-08-15
+
+# Use custom download directory
+python main.py --dir my_photos --from 2025-08-01
+
+# Show help
+python main.py --help
+```
+
+#### File Organization
+Files are automatically organized into date-based folders:
+```
+downloads/
+├── 2025-08-15/
+│   ├── photo1.jpg
+│   └── video1.mp4
+├── 2025-08-16/
+│   ├── photo2.jpg
+│   └── photo3.jpg
+└── 2025-08-17/
+    └── video2.mp4
 ```
 
 ## Results
@@ -107,9 +145,18 @@ python main.py
 The application successfully:
 - Authenticated with ProCare Connect
 - Discovered 1 child account (Herman, Astrid)
-- Found 2,667 total photos across 100+ pages
-- Downloaded photos with proper authentication headers
-- Saved photos to local `photos/` directory with UUID filenames
+- Found 2,667+ total media items (photos and videos) across 100+ pages
+- Downloaded media with proper authentication headers and rate limiting
+- Organized files into date-based folders with UUID filenames
+- Supports selective downloads by date range for efficient incremental updates
+
+## Rate Limiting & Performance
+
+To be respectful to ProCare's servers, the application includes:
+- **500ms delay** between individual file downloads  
+- **1 second delay** between API pagination requests
+- **2-minute break** after every 100 downloads to prevent rate limiting
+- Graceful error handling and retry logic
 
 ## Security Considerations
 
@@ -134,12 +181,12 @@ The application successfully:
 ## Future Enhancements
 
 Potential improvements for this project:
-- Date range filtering for selective downloads
-- Resume capability for interrupted downloads
-- Photo organization by date/activity type
-- Support for video downloads
-- Multiple child support
-- GUI interface for non-technical users
+- Resume capability for interrupted downloads (currently restarts from beginning)
+- Duplicate detection to avoid re-downloading existing files
+- Multiple child support (currently uses first child found)
+- GUI interface for non-technical users  
+- Export metadata to CSV/JSON for cataloging
+- Integration with cloud storage services
 
 ## Development Environment
 
