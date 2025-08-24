@@ -1,0 +1,15 @@
+# Environment and credentials
+.env*
+auth_session.json
+
+# Virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Downloaded photos
+photos/
+
+# System files
+.DS_Store
+*.log
